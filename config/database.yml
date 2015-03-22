@@ -1,0 +1,20 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  # For details on connection pooling, see rails configuration guide
+  # http://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: 5
+
+development:
+  <<: *default
+  database: grow_development
+
+test:
+  <<: *default
+  database: grow_test
+
+production:
+  <<: *default
+  database: grow_production
+  username: grow
+  password: <%= ENV['GROW_DATABASE_PASSWORD'] %>
