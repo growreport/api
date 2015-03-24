@@ -6,7 +6,7 @@ FactoryGirl.define do
     email { "#{username}@test.com" }
     password 'password'
     password_confirmation { password }
-    authentication_token SecureRandom.hex
+    auth_token SecureRandom.hex
   end
 
   factory :strain do
@@ -14,6 +14,9 @@ FactoryGirl.define do
   end
 
   factory :plant do
+    age 40
+    harvest_date Time.now
+    cure_date Time.now + 6.days
     strain
   end
 
