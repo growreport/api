@@ -7,86 +7,74 @@ describe "Users API" do
       get "/users", nil, { authorization: "Token #{user.auth_token}" }
 
       expect(response).to be_success
-      p request.body
-      json = JSON.parse(request.body)
-      expect(json['user'].size).to eq(4)
-      expect(json['user']['username']).to eq("tester")
-      expect(json['user']['email']).to eq("dogbones@hungry.com")
+      json = JSON.parse(response.body)
+      expect(json['users'].size).to eq(User.count)
     end
   end
 
   describe 'POST /users' do
-    let(:user) { FactoryGirl.create :user }
+    let(:user) { FactoryGirl.build :user }
     context "Valid new user" do
-      it "increments the user count" do
-        expect {
-          post "/users", {
-            user: user
-          }
-        }.to change(User, :count).by(1)
-      end
-
-      it "has valid data" do
-        post "/users", {
-          user: user
-        }
+      it "is created" do
+        expect { post_users(user) }.to change(User, :count).by(1)
         expect(User.last.email).to eq(user.email)
         expect(User.last.username).to eq(user.username)
-      end
-         
-      it "returns 201" do
-        post "/users", {
-          user: user
-        }
         expect(response.status).to eq(201)
       end
     end
 
     context "Invalid new user" do
-      it "is nott added" do
-        user.password = 'wh1ops'
-        expect { 
-          post "/users", {
-            user: user
-          }
-        }.to_not change(User, :count).by(1)
-      end
-
-      it "returns 422" do
-        user.password = 'whoops'
-        post "/users", {
-          user: user
-        }
+      it "is not created" do
+        user.email = 'email?'
+        expect { post_users(user) }.to_not change(User, :count)
         expect(response.status).to eq(422)
       end
     end
   end
 
   describe "PUT /users/:id" do
-    let(:user) { FactoryGirl.create :user }
-    it "Updates the users email and password" do
-      user = FactoryGirl.create(:user)
-      email = "dogbones@hungry.com"
-      password = "new_password"
-      put "/users/#{user.id}",
-      { user: {
-          current_password: "password",
-          email: email,
-          password: password,
-          password_confirmation: password
-      }}, { authorization: "Token #{user.auth_token}" }
-      expect(response.status).to eq(204)
-      expect(user.reload.email).to eq(email)
-      expect(user.reload.authenticate(password)).to eq(user)
-    end
+    let(:valid_update_attr) { 
+      { 
+        email: 'new@email.com', 
+        username: 'newkidontheblock',
+        current_password: 'password',  
+        password: 'pass',
+        password_confirmation: 'pass'
+      }
+    }
+    let(:expected_update_attr) { { email: 'new@email.com', username: 'newkidontheblock' } }
+    let(:action) { put "/users/#{record.id}", { user: valid_update_attr }, {
+      authorization: "Token #{record.auth_token}" }
+    }
+    let!(:record) { FactoryGirl.create :user }
+    before { action }
+    it {
+     record.reload
+     expect(response.status).to eq(204) 
+     expect(record.email).to eq(expected_update_attr[:email]) 
+     expect(record.username).to eq(expected_update_attr[:username]) 
+     expect(record.authenticate('pass')).to be_true 
+   }
   end
 
   describe "DELETE /users/:id" do
+    let!(:user) { FactoryGirl.create(:user) }
     it "Deletes the user" do
-      user = FactoryGirl.create(:user)
       expect {
         delete "/users/#{user.id}", {}, { authorization: "Token #{user.auth_token}" }
       }.to change(User, :count).by(-1)
     end
   end
+end
+
+
+def post_users(user)
+  post "/users", {
+    user: {
+      username: user.username,
+      email: user.email,
+      password: user.password,
+      password_confirmation: user.password_confirmation
+    }
+  }
 end

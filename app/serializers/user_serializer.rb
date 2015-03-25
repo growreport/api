@@ -1,5 +1,3 @@
-UserSerializers < ActiveModel::Serializer
+class UserSerializer < ActiveModel::Serializer
   attributes :id, :username, :email
-
-  has_many :groups, :posts
 end

@@ -2,7 +2,8 @@ class UsersController < ApplicationController
   before_action :authenticate, except: [:create, :index, :show]
 
   def index
-    if (users = User.all).nil?
+    users = User.all
+    if users
       render json: users
     else
       head :no_content
@@ -10,7 +11,8 @@ class UsersController < ApplicationController
   end
 
   def show
-    if (user = User.find(params[:id])).nil?
+    user = User.find(params[:id])
+    if user.valid?
       render json: user
     else
       head :not_found
@@ -18,27 +20,33 @@ class UsersController < ApplicationController
   end
 
   def create
-    if (user = User.create(create_params)).nil?
+    user = User.create(create_params)
+    if user.valid? 
       render json: user, status: :created
     else
-      render json: user.errors, status: :unprocessable_entity
+      render json: { 
+        error: user.errors.messages 
+      }, status: :unprocessable_entity
     end
   end
 
   def update
     if @current_user.authenticate update_params[:current_password] 
-      if @current_user.update(update_params)
+      params = update_params.except(:current_password)
+      u = @current_user.update(params)
+      p u
+      if u
         head :no_content
       else
-        render json: @current_user.errors, status: :unprocessable_entity
+        render json: u.errors, status: :unprocessable_entity
       end
     else
-      render json: { error: 'Bad password' }, status: :unprocessable_entity
+      render json: { error: { current_password: 'Incorrect' } }, status: :unprocessable_entity
     end
   end
 
   def destroy
-    if @current_user.destroy
+    if @current_user.delete
       head :no_content
     else
       render json: @current_user.errors, status: :internal_server_error
@@ -47,10 +55,10 @@ class UsersController < ApplicationController
 
   private
   def create_params
-    params.require(:user).permit(:id, :email, :password, :password_confirmation)
+    params.require(:user).permit(:username, :email, :password, :password_confirmation)
   end
 
   def update_params
-    params.require(:user).permit(:id, :email, :password, :password_confirmation)
+    params.require(:user).permit(:email, :username, :current_password, :password, :password_confirmation) 
   end
 end
