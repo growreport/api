@@ -33,9 +33,7 @@ class UsersController < ApplicationController
   def update
     if @current_user.authenticate update_params[:current_password] 
       params = update_params.except(:current_password)
-      u = @current_user.update(params)
-      p u
-      if u
+      if @current_user.update(params)
         head :no_content
       else
         render json: u.errors, status: :unprocessable_entity

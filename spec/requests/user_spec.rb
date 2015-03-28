@@ -35,8 +35,8 @@ describe "Users API" do
   describe "PUT /users/:id" do
     let(:valid_update_attr) { 
       { 
-        email: 'new@email.com', 
-        username: 'newkidontheblock',
+        email: 'newer@email.com', 
+        username: 'newestkidontheblock',
         current_password: 'password',  
         password: 'pass',
         password_confirmation: 'pass'
@@ -49,11 +49,11 @@ describe "Users API" do
     let!(:record) { FactoryGirl.create :user }
     before { action }
     it {
-     record.reload
-     expect(response.status).to eq(204) 
-     expect(record.email).to eq(expected_update_attr[:email]) 
-     expect(record.username).to eq(expected_update_attr[:username]) 
-     expect(record.authenticate('pass')).to be_true 
+      record.reload
+      expect(response.status).to eq(204) 
+      expect(record.email).to eq(expected_update_attr[:email]) 
+      expect(record.username).to eq(expected_update_attr[:username]) 
+      expect(record.authenticate('pass')).to be_true 
    }
   end
 
