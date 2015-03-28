@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150328064617) do
+ActiveRecord::Schema.define(version: 20150328075831) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -60,13 +60,11 @@ ActiveRecord::Schema.define(version: 20150328064617) do
     t.datetime "updated_at"
     t.integer  "user_id"
     t.integer  "group_id"
-    t.integer  "strain_id"
     t.string   "strain"
     t.string   "technique"
   end
 
   add_index "plants", ["group_id"], name: "index_plants_on_group_id", using: :btree
-  add_index "plants", ["strain_id"], name: "index_plants_on_strain_id", using: :btree
   add_index "plants", ["user_id"], name: "index_plants_on_user_id", using: :btree
 
   create_table "posts", force: true do |t|
