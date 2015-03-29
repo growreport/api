@@ -9,15 +9,11 @@ FactoryGirl.define do
     auth_token SecureRandom.hex
   end
 
-  factory :strain do
-    sequence(:name) { |n| "strain_#{n}" }
-  end
 
   factory :plant do
     age 40
     harvest_date Time.now
     cure_date Time.now + 6.days
-    strain
   end
 
   factory :post do

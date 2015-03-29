@@ -8,7 +8,6 @@ describe Plant do
   end
 
   describe "associations" do
-    it { should belong_to :strain }
     it { should belong_to :user }
     it { should belong_to :group }
     it { should have_many :measurements }
