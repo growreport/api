@@ -5,6 +5,8 @@ describe Plant do
     it { should validate_presence_of :age }
     it { should validate_presence_of :harvest_date }
     it { should validate_presence_of :cure_date }
+    it { should validate_presence_of :strain }
+    it { should validate_presence_of :technique }
   end
 
   describe "associations" do
