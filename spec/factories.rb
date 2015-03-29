@@ -13,7 +13,6 @@ FactoryGirl.define do
     age 40
     harvest_date Time.now
     cure_date Time.now + 6.days
-    strain
   end
 
   factory :post do

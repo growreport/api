@@ -42,7 +42,7 @@ describe "Users API" do
         password_confirmation: 'pass'
       }
     }
-    let(:expected_update_attr) { { email: 'new@email.com', username: 'newkidontheblock' } }
+    let(:expected_update_attr) { { email: 'newer@email.com', username: 'newkidontheblock' } }
     let(:action) { put "/users/#{record.id}", { user: valid_update_attr }, {
       authorization: "Token #{record.auth_token}" }
     }

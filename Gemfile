@@ -12,6 +12,7 @@ gem 'active_model_serializers', '~> 0.8.3'
 
 group :development do
   gem 'spring'
+  gem 'faker'
 end
 
 group :development, :test do
